@@ -15,7 +15,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { KhadijaNavbar } from "./Home";
 
-const API = "http://localhost:5000/api";
+const API = "import.meta.env.VITE_API_URL || "http://localhost:5000/api"";
 const WHATSAPP = "923363406330";
 
 export default function CustomOrder() {

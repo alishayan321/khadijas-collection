@@ -20,7 +20,7 @@ import axios from "axios";
 import { useCart } from "../store/cart";
 import { KhadijaNavbar } from "./Home";
 
-const API = "http://localhost:5000/api";
+const API = "import.meta.env.VITE_API_URL || "http://localhost:5000/api"";
 const WHATSAPP = "923363406330";
 
 export default function ProductDetail() {

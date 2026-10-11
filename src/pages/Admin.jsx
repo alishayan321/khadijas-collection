@@ -24,7 +24,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 
-const API = "http://localhost:5000/api";
+const API = "import.meta.env.VITE_API_URL || "http://localhost:5000/api"";
 
 /* ============ AXIOS INSTANCE WITH TOKEN ============ */
 const api = axios.create({ baseURL: API });
