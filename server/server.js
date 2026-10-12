@@ -20,16 +20,17 @@ dotenv.config();
 const app = express();
 
 /* ============ SECURITY ============ */
-app.use(helmet());
 app.use(
   cors({
     origin: [
-      process.env.CLIENT_URL,
-      process.env.CLIENT_URL_PROD,
+      "https://khadijas-collection-ka5c-iota.vercel.app",
+      "https://khadijas-collection.vercel.app",
       "http://localhost:5173",
       "http://localhost:5174",
-    ].filter(Boolean),
+    ],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
