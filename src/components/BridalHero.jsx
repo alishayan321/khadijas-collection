@@ -254,7 +254,7 @@ export default function BridalHero() {
               className="relative"
             >
               <img
-                src="/images/hero-bride.png"
+                src="/images/hero-bride-v2.png"
                 alt="Khadija's Collection Bridal"
                 className="relative max-h-[75vh] w-auto object-contain rounded-sm"
                 style={{
