@@ -23,7 +23,7 @@ import { useCart } from "../store/cart";
 import BridalHero from "../components/BridalHero";
 import ChatBox from "../components/ChatBox";
 
-const API = "import.meta.env.VITE_API_URL || "http://localhost:5000/api"";
+const API = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 const WHATSAPP = "923363406330";
 const PHONE_DISPLAY = "0336 340 6330";
 
