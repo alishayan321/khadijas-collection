@@ -16,6 +16,7 @@ import {
   Ruler,
   Scissors,
   ArrowRight,
+  Navigation,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
@@ -26,6 +27,17 @@ import ChatBox from "../components/ChatBox";
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 const WHATSAPP = "923363406330";
 const PHONE_DISPLAY = "0336 340 6330";
+
+/* ============ SMOOTH SCROLL HELPER ============ */
+const scrollToSection = (id) => {
+  const element = document.getElementById(id);
+  if (element) {
+    const offset = 80;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - offset;
+    window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+  }
+};
 
 /* ============ FALLBACK CATEGORIES ============ */
 const FALLBACK_CATEGORIES = [
@@ -123,6 +135,12 @@ export function KhadijaNavbar() {
     };
     fetchCategories();
   }, []);
+
+  /* Contact click handler */
+  const handleContactClick = (e) => {
+    e.preventDefault();
+    scrollToSection("contact");
+  };
 
   return (
     <>
@@ -237,9 +255,17 @@ export function KhadijaNavbar() {
               </div>
 
               <NavLink to="/custom">Custom</NavLink>
-              <NavLink to="/#contact" icon={<Phone size={14} />}>
-                Contact
-              </NavLink>
+
+              {/* CONTACT — now smooth scrolls */}
+              <a
+                href="#contact"
+                onClick={handleContactClick}
+                className="group relative flex items-center gap-1.5 px-4 py-2.5 text-charcoal/80 hover:text-maroon transition-colors cursor-pointer"
+              >
+                <Phone size={14} />
+                <span className="tracking-wide">Contact</span>
+                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 group-hover:w-8 h-px bg-gold transition-all duration-300" />
+              </a>
 
               <Link to="/cart" className="relative ml-3">
                 <motion.div
@@ -282,6 +308,7 @@ export function KhadijaNavbar() {
         </div>
       </motion.nav>
 
+      {/* MOBILE DRAWER */}
       <AnimatePresence>
         {menuOpen && (
           <>
@@ -355,9 +382,19 @@ export function KhadijaNavbar() {
                 <MobileLink to="/custom" onClick={() => setMenuOpen(false)}>
                   Custom Order
                 </MobileLink>
-                <MobileLink to="/#contact" onClick={() => setMenuOpen(false)}>
+
+                {/* Contact — smooth scroll */}
+                <a
+                  href="#contact"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setMenuOpen(false);
+                    setTimeout(() => scrollToSection("contact"), 300);
+                  }}
+                  className="block px-4 py-3 text-base text-charcoal/90 hover:text-maroon hover:bg-gold/5 rounded transition-colors border-b border-gold/10"
+                >
                   Contact
-                </MobileLink>
+                </a>
 
                 <Link
                   to="/cart"
@@ -836,94 +873,266 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* CONTACT */}
-      <section id="contact" className="py-24 px-4 md:px-8 bg-white">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.8 }}
-          >
-            <p className="text-gold tracking-[0.3em] text-xs mb-3">VISIT US</p>
-            <h2 className="font-serif text-3xl md:text-4xl text-maroon mb-6">
-              Get in Touch
-            </h2>
+      {/* ============ CONTACT SECTION — PROFESSIONAL & ANIMATED ============ */}
+      <section
+        id="contact"
+        className="py-24 px-4 md:px-8 bg-white relative overflow-hidden"
+      >
+        {/* Background decoration */}
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.03, 0.06, 0.03],
+          }}
+          transition={{ duration: 10, repeat: Infinity }}
+          className="absolute top-1/4 right-0 w-96 h-96 rounded-full bg-gold blur-3xl pointer-events-none"
+        />
 
-            <div className="space-y-5 text-charcoal/80">
-              <div className="flex gap-4 items-start">
-                <Phone className="text-maroon mt-1" size={20} />
-                <div>
-                  <p className="font-medium text-charcoal">Phone / WhatsApp</p>
-                  <a href={`tel:+${WHATSAPP}`} className="hover:text-maroon">
-                    {PHONE_DISPLAY}
-                  </a>
-                </div>
-              </div>
-
-              <div className="flex gap-4 items-start">
-                <MapPin className="text-maroon mt-1" size={20} />
-                <div>
-                  <p className="font-medium text-charcoal">Studio</p>
-                  <p>Lahore, Pakistan</p>
-                </div>
-              </div>
-
-              <div className="flex gap-4 items-start">
-                <Clock className="text-maroon mt-1" size={20} />
-                <div>
-                  <p className="font-medium text-charcoal">Timings</p>
-                  <p>Mon–Sat: 11 AM – 9 PM</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap gap-4 mt-8">
-              <motion.a
-                whileHover={{ scale: 1.05, y: -2 }}
-                href={`https://wa.me/${WHATSAPP}`}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-2 bg-green-600 text-white px-6 py-3 hover:bg-green-700 transition shadow-md"
-              >
-                <MessageCircle size={18} /> WhatsApp
-              </motion.a>
-              <motion.a
-                whileHover={{ scale: 1.05, y: -2 }}
-                href="https://instagram.com"
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-2 border border-maroon text-maroon px-6 py-3 hover:bg-maroon hover:text-white transition"
-              >
-                <Camera size={18} /> Instagram
-              </motion.a>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.8 }}
-            className="bg-cream p-8 border border-gold/20 shadow-sm"
-          >
-            <h3 className="font-serif text-2xl text-maroon mb-4">
-              Quick Enquiry
-            </h3>
-            <p className="text-charcoal/60 text-sm mb-6">
-              Send us a message and we'll get back on WhatsApp.
-            </p>
-            <motion.a
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              href={`https://wa.me/${WHATSAPP}?text=Assalam-o-Alaikum, I want to inquire about Khadija's Collection.`}
-              target="_blank"
-              rel="noreferrer"
-              className="block text-center bg-maroon text-white py-3 tracking-wide hover:bg-gold transition"
+        <div className="max-w-6xl mx-auto relative">
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-gold tracking-[0.4em] text-xs mb-3"
             >
-              Message on WhatsApp
-            </motion.a>
-          </motion.div>
+              VISIT US
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="font-serif text-3xl md:text-5xl text-maroon mb-4"
+            >
+              Get in Touch
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-charcoal/60 text-sm max-w-xl mx-auto"
+            >
+              Visit our studio or reach out — we'd love to help you craft your
+              perfect outfit.
+            </motion.p>
+            <motion.div
+              initial={{ width: 0 }}
+              whileInView={{ width: 80 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="h-px bg-gold mx-auto mt-6"
+            />
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-12 lg:gap-16">
+            {/* LEFT: Contact Info */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.8 }}
+            >
+              <h3 className="font-serif text-2xl md:text-3xl text-maroon mb-8">
+                Contact Information
+              </h3>
+
+              <div className="space-y-6">
+                {/* Phone */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1, duration: 0.6 }}
+                  whileHover={{ x: 5 }}
+                  className="flex gap-5 items-start group cursor-pointer"
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    className="w-14 h-14 rounded-full bg-gradient-to-br from-maroon/10 to-gold/10 border border-gold/30 flex items-center justify-center flex-shrink-0 group-hover:border-maroon transition-colors"
+                  >
+                    <Phone className="text-maroon" size={20} />
+                  </motion.div>
+                  <div className="pt-1">
+                    <p className="text-[10px] tracking-[0.2em] text-gold mb-1">
+                      PHONE / WHATSAPP
+                    </p>
+                    <a
+                      href={`tel:+${WHATSAPP}`}
+                      className="text-base md:text-lg text-charcoal font-medium hover:text-maroon transition-colors"
+                    >
+                      {PHONE_DISPLAY}
+                    </a>
+                  </div>
+                </motion.div>
+
+                {/* Location — KARACHI */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2, duration: 0.6 }}
+                  whileHover={{ x: 5 }}
+                  className="flex gap-5 items-start group cursor-pointer"
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    className="w-14 h-14 rounded-full bg-gradient-to-br from-maroon/10 to-gold/10 border border-gold/30 flex items-center justify-center flex-shrink-0 group-hover:border-maroon transition-colors"
+                  >
+                    <MapPin className="text-maroon" size={20} />
+                  </motion.div>
+                  <div className="pt-1">
+                    <p className="text-[10px] tracking-[0.2em] text-gold mb-1">
+                      STUDIO
+                    </p>
+                    <p className="text-base md:text-lg text-charcoal font-medium">
+                      Karachi, Pakistan
+                    </p>
+                    <motion.a
+                      href="https://maps.google.com/?q=Karachi,Pakistan"
+                      target="_blank"
+                      rel="noreferrer"
+                      whileHover={{ x: 3 }}
+                      className="inline-flex items-center gap-1 text-xs text-maroon hover:text-gold mt-1 transition-colors"
+                    >
+                      <Navigation size={11} /> Get Directions
+                    </motion.a>
+                  </div>
+                </motion.div>
+
+                {/* Timing */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3, duration: 0.6 }}
+                  whileHover={{ x: 5 }}
+                  className="flex gap-5 items-start group"
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    className="w-14 h-14 rounded-full bg-gradient-to-br from-maroon/10 to-gold/10 border border-gold/30 flex items-center justify-center flex-shrink-0 group-hover:border-maroon transition-colors"
+                  >
+                    <Clock className="text-maroon" size={20} />
+                  </motion.div>
+                  <div className="pt-1">
+                    <p className="text-[10px] tracking-[0.2em] text-gold mb-1">
+                      TIMINGS
+                    </p>
+                    <p className="text-sm text-charcoal">Mon–Sat: 11 AM – 9 PM</p>
+                    <p className="text-sm text-charcoal">Sunday: 3 PM – 10 PM</p>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Social Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+                className="flex flex-wrap gap-3 mt-10"
+              >
+                <motion.a
+                  whileHover={{ scale: 1.05, y: -3 }}
+                  whileTap={{ scale: 0.98 }}
+                  href={`https://wa.me/${WHATSAPP}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group flex items-center gap-2 bg-green-600 text-white px-6 py-3 hover:bg-green-700 transition shadow-md"
+                >
+                  <MessageCircle size={18} className="group-hover:rotate-12 transition" />
+                  WhatsApp
+                </motion.a>
+                <motion.a
+                  whileHover={{ scale: 1.05, y: -3 }}
+                  whileTap={{ scale: 0.98 }}
+                  href="https://instagram.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group flex items-center gap-2 border border-maroon text-maroon px-6 py-3 hover:bg-maroon hover:text-white transition"
+                >
+                  <Camera size={18} className="group-hover:scale-110 transition" />
+                  Instagram
+                </motion.a>
+              </motion.div>
+            </motion.div>
+
+            {/* RIGHT: Quick Enquiry Card */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.8 }}
+              className="relative"
+            >
+              <motion.div
+                whileHover={{ y: -5 }}
+                transition={{ duration: 0.3 }}
+                className="bg-cream p-8 md:p-10 border border-gold/20 shadow-xl relative overflow-hidden"
+              >
+                {/* Corner decoration */}
+                <div className="absolute top-0 right-0 w-20 h-20 border-t-2 border-r-2 border-gold/40" />
+                <div className="absolute bottom-0 left-0 w-20 h-20 border-b-2 border-l-2 border-gold/40" />
+
+                <motion.div
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3, type: "spring" }}
+                  className="w-14 h-14 rounded-full bg-maroon flex items-center justify-center mb-6 mx-auto"
+                >
+                  <MessageCircle className="text-gold" size={24} />
+                </motion.div>
+
+                <h3 className="font-serif text-2xl md:text-3xl text-maroon mb-3 text-center">
+                  Quick Enquiry
+                </h3>
+                <p className="text-charcoal/60 text-sm mb-8 text-center leading-relaxed">
+                  Send us a message and we'll respond on WhatsApp within
+                  minutes.
+                </p>
+
+                <motion.a
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  href={`https://wa.me/${WHATSAPP}?text=Assalam-o-Alaikum, I want to inquire about Khadija's Collection.`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block text-center bg-maroon text-white py-4 tracking-widest text-sm hover:bg-gold transition shadow-md shine-btn"
+                >
+                  <span className="relative z-10">MESSAGE ON WHATSAPP</span>
+                </motion.a>
+
+                {/* Trust badges */}
+                <div className="mt-8 pt-6 border-t border-gold/20 grid grid-cols-3 gap-3 text-center">
+                  {[
+                    { label: "REPLY", sub: "in minutes" },
+                    { label: "CUSTOM", sub: "stitching" },
+                    { label: "DELIVERY", sub: "all Pakistan" },
+                  ].map((b, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.5 + i * 0.1 }}
+                    >
+                      <p className="text-[10px] tracking-widest text-gold font-medium">
+                        {b.label}
+                      </p>
+                      <p className="text-[10px] text-charcoal/50 mt-0.5">
+                        {b.sub}
+                      </p>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -957,7 +1166,7 @@ export default function Home() {
           Khadija's Collection
         </h3>
         <p className="text-sm mb-4">
-          Bespoke Abaya, Bridal & Formal Wear — Lahore
+          Bespoke Abaya, Bridal & Formal Wear — Karachi
         </p>
         <p className="text-xs">
           © {new Date().getFullYear()} Khadija's Collection. All rights
@@ -965,7 +1174,6 @@ export default function Home() {
         </p>
       </motion.footer>
 
-      {/* ============ CHAT BOX (sirf Home page pe) ============ */}
       <ChatBox />
     </div>
   );
