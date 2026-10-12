@@ -324,19 +324,7 @@ export default function Shop() {
         )}
       </section>
 
-      {/* Floating WhatsApp */}
-      <motion.a
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 1.5, type: "spring" }}
-        whileHover={{ scale: 1.15, rotate: 8 }}
-        href={`https://wa.me/${WHATSAPP}`}
-        target="_blank"
-        rel="noreferrer"
-        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 bg-green-600 text-white p-3 md:p-4 rounded-full shadow-2xl hover:bg-green-700 transition z-50 pulse-glow"
-      >
-        <MessageCircle size={20} />
-      </motion.a>
+     
     </div>
   );
 }
